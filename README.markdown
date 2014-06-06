@@ -1,4 +1,4 @@
-# allowed
+# allowed [![Build Status](https://travis-ci.org/dribbble/allowed.svg)](https://travis-ci.org/dribbble/allowed)
 
 Throttle record creation in ActiveRecord.
 
