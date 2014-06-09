@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.2 — Unreleased
+## 0.1.2 — June 9th, 2014
 
 * Only handle callbacks after a rollback.
 
