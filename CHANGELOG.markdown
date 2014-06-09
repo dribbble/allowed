@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.1 — Unreleased
+## 0.1.1 — June 9th, 2014
 
 * Clear failed throttles after handling.
 
