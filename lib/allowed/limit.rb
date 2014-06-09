@@ -26,6 +26,7 @@ module Allowed
       @_throttle_failures.each do |throttle|
         throttle.callback.call(self)
       end
+      @_throttle_failures = []
     end
     private :handle_throttles
 

@@ -61,6 +61,12 @@ describe Allowed::Limit, "#handle_throttles" do
 
     expect(callback).to have_received(:call).with(subject).once
   end
+
+  it "clears the failed throttles" do
+    subject.__send__(:handle_throttles)
+
+    expect(subject.instance_variable_get("@_throttle_failures")).to be_empty
+  end
 end
 
 describe Allowed::Limit, "#validate_throttles" do
