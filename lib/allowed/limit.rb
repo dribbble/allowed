@@ -17,8 +17,7 @@ module Allowed
 
         validate :validate_throttles, on: :create
 
-        after_rollback   :handle_throttles, on: :create
-        after_validation :handle_throttles, on: :create
+        after_rollback :handle_throttles, on: :create
       end
     end
 
