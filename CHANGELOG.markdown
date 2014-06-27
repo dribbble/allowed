@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.3 — Unreleased
+
+* Support Rails 3 and 4.
+
 ## 0.1.2 — June 9th, 2014
 
 * Only handle callbacks after a rollback.
