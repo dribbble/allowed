@@ -7,4 +7,10 @@ RSpec::Core::RakeTask.new do |t|
   t.pattern = "spec/**/*_spec.rb"
 end
 
-task default: :spec
+if ENV["APPRAISAL_INITIALIZED"] || ENV["CI"]
+  task default: :spec
+else
+  task :default do
+    exec "bundle exec appraisal rake spec"
+  end
+end
