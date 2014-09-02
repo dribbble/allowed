@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.3 — Unreleased
+## 0.1.3 — September 2nd, 2014
 
 * Support Rails 3 and 4.
 
