@@ -36,6 +36,7 @@ describe Allowed::Limit, "#allow" do
   it "only calls validation callback on create" do
     instance = subject.new
     instance.stubs(:validate_throttles)
+    instance.stubs(:handle_throttles)
 
     instance.save
     instance.save
@@ -47,6 +48,12 @@ describe Allowed::Limit, "#allow" do
     subject.allow(limit, options)
 
     expect(subject).to have_callback(:rollback, :handle_throttles, kind: :after, on: :create)
+  end
+
+  it "adds after validation callback" do
+    subject.allow(limit, options)
+
+    expect(subject).to have_callback(:validation, :handle_throttles, kind: :after, on: :create)
   end
 end
 
