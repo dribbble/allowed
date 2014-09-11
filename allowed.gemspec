@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = "allowed"
-  s.version     = "0.1.3"
+  s.version     = "0.2.0"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Tristan Dunn"]
   s.email       = "support@dribbble.com"

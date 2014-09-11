@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.0 - September 11th, 2014
+
+* Provide a symbol as the limit to call a method on the record being saved.
+
+## 0.1.4 - September 11th, 2014
+
+* Ensure failure callbacks trigger even if rollback is not triggered.
+
 ## 0.1.3 — September 2nd, 2014
 
 * Support Rails 3 and 4.
