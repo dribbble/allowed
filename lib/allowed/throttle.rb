@@ -18,7 +18,7 @@ module Allowed
     def valid?(record)
       return true if skip?(record)
 
-      scope_for(record).count < limit
+      scope_for(record).count < allowed_count(record)
     end
 
     private
@@ -43,6 +43,15 @@ module Allowed
 
     def timeframe
       options.fetch(:per, 1.day).ago
+    end
+
+    def allowed_count(record)
+      case limit
+      when Integer
+        limit
+      when Symbol
+        record.__send__(limit)
+      end
     end
   end
 end

@@ -102,6 +102,36 @@ describe Allowed::Throttle, "#valid?, above limit" do
   end
 end
 
+describe Allowed::Throttle, "#valid?, with limit method symbol" do
+  subject { Allowed::Throttle.new(:custom_limit) }
+
+  let(:record) { ExampleRecord.new }
+
+  before do
+    2.times { ExampleRecord.create }
+  end
+
+  it "returns true if higher than the count" do
+    ExampleRecord.class_eval do
+      def custom_limit
+        3
+      end
+    end
+
+    expect(subject).to be_valid(record)
+  end
+
+  it "returns false if lower than the count" do
+    ExampleRecord.class_eval do
+      def custom_limit
+        1
+      end
+    end
+
+    expect(subject).to_not be_valid(record)
+  end
+end
+
 describe Allowed::Throttle, "#valid?, with custom timeframe" do
   subject { Allowed::Throttle.new(1, per: 5.minutes) }
 
