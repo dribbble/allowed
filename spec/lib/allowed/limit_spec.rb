@@ -49,12 +49,6 @@ describe Allowed::Limit, "#allow" do
 
     expect(subject).to have_callback(:rollback, :handle_throttles, kind: :after, on: :create)
   end
-
-  it "adds after validation callback" do
-    subject.allow(limit, options)
-
-    expect(subject).to have_callback(:validation, :handle_throttles, kind: :after, on: :create)
-  end
 end
 
 describe Allowed::Limit, "#handle_throttles" do
