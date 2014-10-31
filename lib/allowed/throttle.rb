@@ -11,6 +11,10 @@ module Allowed
       options.fetch(:callback, -> (record) { })
     end
 
+    def timeframe_column
+      options.fetch(:timeframe_column, :created_at)
+    end
+
     def message
       options.fetch(:message, "Limit reached.")
     end
@@ -24,7 +28,7 @@ module Allowed
     private
 
     def scope_for(record)
-      scope      = record.class.where("created_at >= ?", timeframe)
+      scope      = record.class.where("#{timeframe_column} >= ?", timeframe)
       attributes = Array(options.fetch(:scope, []))
       attributes.inject(scope) do |scope, attribute|
         scope.where(attribute => record.__send__(attribute))
