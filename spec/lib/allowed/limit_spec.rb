@@ -52,6 +52,25 @@ describe Allowed::Limit, "#allow" do
   end
 end
 
+describe Allowed::Limit, "#allowed?" do
+  subject { ExampleRecord.new }
+
+  let(:valid_throttle)   { double("throttle", valid?: true) }
+  let(:invalid_throttle) { double("throttle", valid?: false) }
+
+  it "returns true if all throttles valid" do
+    subject.class._throttles = [valid_throttle]
+
+    expect(subject).to be_allowed
+  end
+
+  it "returns false if any throttle invalid" do
+    subject.class._throttles = [valid_throttle, invalid_throttle]
+
+    expect(subject).to_not be_allowed
+  end
+end
+
 describe Allowed::Limit, "#handle_throttles" do
   subject { ExampleRecord.new }
 
