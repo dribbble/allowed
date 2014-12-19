@@ -35,8 +35,9 @@ describe Allowed::Limit, "#allow" do
 
   it "only calls validation callback on create" do
     instance = subject.new
-    instance.stubs(:validate_throttles)
-    instance.stubs(:handle_throttles)
+
+    allow(instance).to receive(:validate_throttles)
+    allow(instance).to receive(:handle_throttles)
 
     instance.save
     instance.save
@@ -54,8 +55,8 @@ end
 describe Allowed::Limit, "#handle_throttles" do
   subject { ExampleRecord.new }
 
-  let(:callback)         { mock(call: true) }
-  let(:invalid_throttle) { mock(callback: callback) }
+  let(:callback)         { double("callback", call: true) }
+  let(:invalid_throttle) { double("throttle", callback: callback) }
 
   before do
     subject.instance_variable_set("@_throttle_failures", [invalid_throttle])
@@ -78,8 +79,8 @@ describe Allowed::Limit, "#validate_throttles" do
   subject { ExampleRecord.new }
 
   let(:message)          { "Over limit." }
-  let(:valid_throttle)   { mock(valid?: true) }
-  let(:invalid_throttle) { mock(valid?: false, message: message) }
+  let(:valid_throttle)   { double("throttle", valid?: true) }
+  let(:invalid_throttle) { double("throttle", valid?: false, message: message) }
 
   before do
     subject.class._throttles = [valid_throttle, invalid_throttle]
