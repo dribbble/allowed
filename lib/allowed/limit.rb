@@ -21,6 +21,12 @@ module Allowed
       end
     end
 
+    def allowed?
+      self.class._throttles.all? do |throttle|
+        throttle.valid?(self)
+      end
+    end
+
     def handle_throttles
       @_throttle_failures.each do |throttle|
         throttle.callback.call(self)
