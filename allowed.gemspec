@@ -13,8 +13,8 @@ Gem::Specification.new do |s|
   s.test_files   = Dir["spec/**/*"].to_a
   s.require_path = "lib"
 
-  s.add_dependency "activerecord",  ">= 3"
-  s.add_dependency "activesupport", ">= 3"
+  s.add_dependency "activerecord",  ">= 4.1"
+  s.add_dependency "activesupport", ">= 4.1"
 
   s.add_development_dependency "appraisal", "1.0.2"
   s.add_development_dependency "rake",      "10.4.2"
