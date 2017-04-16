@@ -15,6 +15,21 @@ describe Allowed::Throttle, ".new" do
   end
 end
 
+describe Allowed::Throttle, "#timeframe_column" do
+  it "returns timeframe_column if provided" do
+    column   = :updated_at
+    throttle = Allowed::Throttle.new(1, timeframe_column: column)
+
+    expect(throttle.timeframe_column).to eq(column)
+  end
+
+  it "returns created_at if not provided" do
+    throttle = Allowed::Throttle.new(1)
+
+    expect(throttle.timeframe_column).to eq(:created_at)
+  end
+end
+
 describe Allowed::Throttle, "#message" do
   it "returns message if provided" do
     message  = "The message."
@@ -155,5 +170,17 @@ describe Allowed::Throttle, "#valid?, with custom scope attributes" do
   it "uses scope attributes for count" do
     expect(subject).to be_valid(ExampleRecord.new(user_id: 1))
     expect(subject).to_not be_valid(ExampleRecord.new(user_id: 2))
+  end
+end
+
+describe Allowed::Throttle, "#valid?, with custom timeframe column" do
+  subject { Allowed::Throttle.new(1, timeframe_column: :updated_at) }
+
+  before do
+    ExampleRecord.create(created_at: 7.days.ago)
+  end
+
+  it "uses custom timeframe column" do
+    expect(subject).to_not be_valid(ExampleRecord.new)
   end
 end
