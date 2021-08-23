@@ -30,25 +30,24 @@ describe Allowed::Limit, "#allow" do
   it "adds validation callback" do
     subject.allow(limit, options)
 
-    expect(subject).to have_callback(:validate, :validate_throttles)
+    expect(subject).to have_callback(:before, :validate, :validate_throttles)
   end
 
   it "only calls validation callback on create" do
+    subject.allow(limit, options)
+
     instance = subject.new
 
-    allow(instance).to receive(:validate_throttles)
-    allow(instance).to receive(:handle_throttles)
+    expect(instance).to receive(:validate_throttles).once
 
     instance.save
     instance.save
-
-    expect(instance).to have_received(:validate_throttles).once
   end
 
   it "adds after rollback callback" do
     subject.allow(limit, options)
 
-    expect(subject).to have_callback(:rollback, :handle_throttles, kind: :after, on: :create)
+    expect(subject).to have_callback(:after, :rollback, :handle_throttles)
   end
 end
 

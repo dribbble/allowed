@@ -1,0 +1,45 @@
+name: CI
+
+on: push
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - gemfile: rails_5_1
+            ruby: 2.7
+
+          - gemfile: rails_5_2
+            ruby: 2.7
+
+          - gemfile: rails_6_0
+            ruby: 2.7
+
+          - gemfile: rails_6_1
+            ruby: 2.7
+
+          - gemfile: rails_6_1
+            ruby: 3.0
+
+    name: ${{ matrix.gemfile }}, ruby ${{ matrix.ruby }}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby }}
+        bundler-cache: false
+
+    - name: Bundle install
+      run: |
+        bundle config set gemfile "${GITHUB_WORKSPACE}/gemfiles/${{ matrix.gemfile }}.gemfile"
+        bundle install --jobs 4 --retry 3
+
+    - name: Run tests
+      run: |
+        bundle exec rspec
