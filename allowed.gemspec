@@ -2,7 +2,7 @@ Gem::Specification.new do |s|
   s.name        = "allowed"
   s.version     = "0.2.1"
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["Tristan Dunn"]
+  s.authors     = ["Tristan Dunn", "Patrick Byrne"]
   s.email       = "support@dribbble.com"
   s.homepage    = "https://github.com/dribbble/allowed"
   s.summary     = "Throttling of ActiveRecord model creations."
@@ -13,11 +13,12 @@ Gem::Specification.new do |s|
   s.test_files   = Dir["spec/**/*"].to_a
   s.require_path = "lib"
 
-  s.add_dependency "activerecord",  ">= 3"
-  s.add_dependency "activesupport", ">= 3"
+  s.add_dependency "activerecord",  ">= 5.1"
+  s.add_dependency "activesupport", ">= 5.1"
 
-  s.add_development_dependency "appraisal", "1.0.2"
-  s.add_development_dependency "rake",      "10.4.2"
-  s.add_development_dependency "rspec",     "3.1.0"
-  s.add_development_dependency "sqlite3",   "1.3.10"
+  s.add_development_dependency "appraisal", "~> 2.4.1"
+  s.add_development_dependency "pry"
+  s.add_development_dependency "rake"
+  s.add_development_dependency "rspec",     "~> 3.10"
+  s.add_development_dependency "sqlite3",   "~> 1.4"
 end

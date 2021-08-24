@@ -22,7 +22,7 @@ module Allowed
     end
 
     def handle_throttles
-      @_throttle_failures.each do |throttle|
+      @_throttle_failures&.each do |throttle|
         throttle.callback.call(self)
       end
       @_throttle_failures = []
