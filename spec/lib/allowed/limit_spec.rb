@@ -51,19 +51,28 @@ describe Allowed::Limit, "#allow" do
   end
 
   it "calls rollback callback on validation failure" do
-    instance = subject.new(user_id: -1)
+    subject.allow :max_count, callback: -> (record) { record.callback_triggered = true }
+
+    limit = 1
+    limit.times { subject.create! }
+    instance = subject.new(max_count: limit)
 
     expect(instance).to receive(:handle_throttles)
     expect(instance.valid?).to be_falsey
     expect(instance.save).to be_falsey
+    expect(instance.callback_triggered).to be true
   end
 
   it "does not call rollback callback on validation success" do
-    instance = subject.new
+    subject.allow :max_count, callback: -> (record) { record.callback_triggered = true }
+
+    limit = 1
+    instance = subject.new(max_count: limit)
 
     expect(instance).to_not receive(:handle_throttles)
     expect(instance.valid?).to be_truthy
     expect(instance.save).to be_truthy
+    expect(instance.callback_triggered).to be_nil
   end
 end
 

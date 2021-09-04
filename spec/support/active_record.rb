@@ -1,7 +1,12 @@
 ActiveRecord::Base.establish_connection(adapter: "sqlite3", database: "spec/test.db")
 
 class ExampleRecord < ActiveRecord::Base
-  validates :user_id, numericality: {greater_than: 0, allow_blank: true}
+  attr_accessor :max_count
+  attr_accessor :callback_triggered
+
+  def max_count
+    @max_count || Float::INFINITY
+  end
 end
 
 RSpec.configure do |config|
