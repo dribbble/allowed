@@ -1,6 +1,7 @@
 ActiveRecord::Base.establish_connection(adapter: "sqlite3", database: "spec/test.db")
 
 class ExampleRecord < ActiveRecord::Base
+  validates :user_id, numericality: {greater_than: 0, allow_blank: true}
 end
 
 RSpec.configure do |config|
