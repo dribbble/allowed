@@ -36,7 +36,7 @@ describe Allowed::Limit, "#allow" do
   it "adds after rollback callback" do
     subject.allow(limit, options)
 
-    expect(subject).to have_callback(:after, :rollback, :handle_throttles)
+    expect(subject).to have_callback(:after, :validation, :handle_throttles)
   end
 
   it "only calls validation callback on create" do
@@ -57,7 +57,6 @@ describe Allowed::Limit, "#allow" do
     limit.times { subject.create! }
     instance = subject.new(max_count: limit)
 
-    expect(instance).to receive(:handle_throttles)
     expect(instance.valid?).to be_falsey
     expect(instance.save).to be_falsey
     expect(instance.callback_triggered).to be true
@@ -69,10 +68,30 @@ describe Allowed::Limit, "#allow" do
     limit = 1
     instance = subject.new(max_count: limit)
 
-    expect(instance).to_not receive(:handle_throttles)
     expect(instance.valid?).to be_truthy
     expect(instance.save).to be_truthy
     expect(instance.callback_triggered).to be_nil
+  end
+
+  it "doesn't unwind callback behavior due to the transaction closing" do
+    subject.allow :max_count, callback: -> (record) do
+      Alert.create!(message: "Too many created!")
+    end
+
+    instance = subject.new(max_count: 0)
+
+    expect(instance.save).to be_falsey
+    expect(Alert.count).to equal 1
+  end
+
+  it "doesn't unwind changes to the record due to transactions closing" do
+    Widget.allow 1, scope: :account_id, callback: -> (widget) { widget.account.touch(:flagged_at) }
+
+    account = Account.create!(flagged_at: nil)
+    Widget.create!(account: account)
+    instance = Widget.new(account: account)
+    expect(instance.save).to be_falsey
+    expect(account.reload.flagged_at).to_not be_nil
   end
 end
 
