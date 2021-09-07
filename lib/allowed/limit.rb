@@ -17,7 +17,8 @@ module Allowed
 
         validate :validate_throttles, on: :create
 
-        after_rollback :handle_throttles, on: :create
+        # should be after_rollback, but Rails 5.2+ don't fire after_rollback or after_commit on failed creates
+        after_validation :handle_throttles, on: :create
       end
     end
 

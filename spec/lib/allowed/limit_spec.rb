@@ -33,6 +33,12 @@ describe Allowed::Limit, "#allow" do
     expect(subject).to have_callback(:before, :validate, :validate_throttles)
   end
 
+  it "adds after rollback callback" do
+    subject.allow(limit, options)
+
+    expect(subject).to have_callback(:after, :validation, :handle_throttles)
+  end
+
   it "only calls validation callback on create" do
     subject.allow(limit, options)
 
@@ -44,10 +50,48 @@ describe Allowed::Limit, "#allow" do
     instance.save
   end
 
-  it "adds after rollback callback" do
-    subject.allow(limit, options)
+  it "calls rollback callback on validation failure" do
+    subject.allow :max_count, callback: -> (record) { record.callback_triggered = true }
 
-    expect(subject).to have_callback(:after, :rollback, :handle_throttles)
+    limit = 1
+    limit.times { subject.create! }
+    instance = subject.new(max_count: limit)
+
+    expect(instance.valid?).to be_falsey
+    expect(instance.save).to be_falsey
+    expect(instance.callback_triggered).to be true
+  end
+
+  it "does not call rollback callback on validation success" do
+    subject.allow :max_count, callback: -> (record) { record.callback_triggered = true }
+
+    limit = 1
+    instance = subject.new(max_count: limit)
+
+    expect(instance.valid?).to be_truthy
+    expect(instance.save).to be_truthy
+    expect(instance.callback_triggered).to be_nil
+  end
+
+  it "doesn't unwind callback behavior due to the transaction closing" do
+    subject.allow :max_count, callback: -> (record) do
+      Alert.create!(message: "Too many created!")
+    end
+
+    instance = subject.new(max_count: 0)
+
+    expect(instance.save).to be_falsey
+    expect(Alert.count).to equal 1
+  end
+
+  it "doesn't unwind changes to the record due to transactions closing" do
+    Widget.allow 1, scope: :account_id, callback: -> (widget) { widget.account.touch(:flagged_at) }
+
+    account = Account.create!(flagged_at: nil)
+    Widget.create!(account: account)
+    instance = Widget.new(account: account)
+    expect(instance.save).to be_falsey
+    expect(account.reload.flagged_at).to_not be_nil
   end
 end
 
